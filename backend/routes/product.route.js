@@ -26,3 +26,4 @@ router.patch(
 router.delete("/:id", protectRoute, adminRoute, deleteProduct);
 
 export default router;
+ 
