@@ -14,7 +14,7 @@ import CategoryPage from "./pages/CategoryPage";
 import PurchaseSuccessPage from "./pages/PurchaseSuccessPage";
 import PurchaseCancelPage from "./pages/PurchaseCancelPage";
 function App() {
-  let user = true;
+  let user = false;
   return (
     <Router>
       <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
