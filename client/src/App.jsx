@@ -13,8 +13,18 @@ import AdminPage from "./pages/AdminPage";
 import CategoryPage from "./pages/CategoryPage";
 import PurchaseSuccessPage from "./pages/PurchaseSuccessPage";
 import PurchaseCancelPage from "./pages/PurchaseCancelPage";
+import { Toaster } from "react-hot-toast";
+import { useUserStore } from "./store/useUserStore";
+import { useEffect } from "react";
+import LoadingSpinner from "./components/LoadingSpinner";
 function App() {
-  let user = false;
+  const { user, checkAuth, checkingAuth } = useUserStore();
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  if (checkingAuth) return <LoadingSpinner />;
   return (
     <Router>
       <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
@@ -64,6 +74,7 @@ function App() {
             />
           </Routes>
         </div>
+        <Toaster />
       </div>
     </Router>
   );

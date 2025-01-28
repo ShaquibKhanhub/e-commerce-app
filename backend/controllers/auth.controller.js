@@ -62,13 +62,12 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
-
     if (refreshToken) {
       const decoded = jwt.verify(
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET
       );
-      await redis.del(`refreshToken:${decoded.userId}`);
+      await redis.del(`refresh_token:${decoded.userId}`);
     }
 
     res.clearCookie("accessToken");
@@ -116,9 +115,9 @@ export const refreshToken = async (req, res) => {
 };
 
 export const getProfile = async (req, res) => {
-	try {
-		res.json(req.user);
-	} catch (error) {
-		res.status(500).json({ message: "Server error", error: error.message });
-	}
+  try {
+    res.json(req.user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 };
