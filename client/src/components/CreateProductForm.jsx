@@ -3,6 +3,7 @@ import { useState } from "react";
 import InputField from "./InputField";
 import { PlusCircle, Upload, Loader, Check } from "lucide-react";
 import { useProductStore } from "../store/useProductStore";
+import toast from "react-hot-toast";
 
 const categories = [
   "jeans",
@@ -34,7 +35,7 @@ const CreateProductForm = () => {
         category: "",
         image: "",
       });
-      console.log('Product created', newProduct);
+      console.log("Product created", newProduct);
     } catch {
       console.log("error creating a product");
     }
@@ -42,7 +43,11 @@ const CreateProductForm = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
+
+    if (file.size > 1024 * 1024) {
+      toast.error("Image size must be less than 1MB");
+      return;
+    } else {
       const reader = new FileReader();
       reader.onloadend = () => {
         setNewProduct({ ...newProduct, image: reader.result });
