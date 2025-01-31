@@ -1,5 +1,5 @@
 import React from "react";
-import CategoryItem from "../components/CartItem";
+import CategoryItem from "../components/CategoryItem";
 
 const categories = [
   { href: "/jeans", name: "Jeans", imageUrl: "/jeans.jpg" },
