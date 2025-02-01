@@ -13,7 +13,7 @@ export const useProductStore = create((set) => ({
     try {
       const res = await axios.post("/products/create", productData);
       set((prevState) => ({
-        products: [...prevState.products, res.data],
+        products: [...prevState.products, res.data.product],
         loading: false,
       }));
       toast.success("Product created successfully");
@@ -85,7 +85,7 @@ export const useProductStore = create((set) => ({
     set({ loading: true });
     try {
       const response = await axios.get("/products/featured");
-      set({ products: response.data, loading: false });
+      set({ products: response.data.products, loading: false });
     } catch (error) {
       set({ error: "Failed to fetch products", loading: false });
       console.log("Error fetching featured products:", error);

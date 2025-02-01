@@ -24,6 +24,7 @@ export const createCheckoutSession = async (req, res) => {
           },
           unit_amount: amount,
         },
+        quantity: product.quantity || 1,
       };
     });
 
@@ -42,11 +43,12 @@ export const createCheckoutSession = async (req, res) => {
     }
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card", "upi"],
+      payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
       success_url: `${process.env.CLIENT_URL}/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.CLIENT_URL}/purchase-cancel`,
+      billing_address_collection: "required", // Forces user to enter their billing address
       discounts: coupon
         ? [
             {
@@ -55,19 +57,20 @@ export const createCheckoutSession = async (req, res) => {
           ]
         : [],
       metadata: {
-        userId: req.user._id, // The ID of the user making the purchase
-        couponCode: couponCode || null, // Coupon code applied (if any), or null if no coupon is used
+        userId: req.user._id.toString(),
+        couponCode: couponCode || null,
         products: JSON.stringify(
           products.map((p) => ({
-            id: p._id, // Product ID
-            quantity: p.quantity, // Quantity purchased
-            price: p.price, // Price of the product
+            id: p._id,
+            quantity: p.quantity,
+            price: p.price,
           }))
-        ), // Stripe metadata only supports string values, so we use JSON.stringify to store the products array as a string. Later, we can use JSON.parse to convert it back into an array of objects if needed.
+        ),
       },
     });
+    
     if (totalAmount >= 20000) {
-      await createStripeCoupon(req.user._id);
+      await createNewCoupon(req.user._id);
     }
     res.status(200).json({ id: session.id, totalAmount: totalAmount / 100 });
   } catch (error) {
